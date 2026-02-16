@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lazy Tools - Fast & Free Online Tools</title>
+  <meta name="description"
+    content="A collection of fast, lightweight, and free online tools including Age Calculator, Unit Converter, Random Number Generator, and more." />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="stylesheet" href="./src/styles/variables.css" />
+  <link rel="stylesheet" href="./src/styles/global.css" />
+</head>
+
+<body>
+  <div id="app">
+    <aside id="sidebar" class="glass">
+      <div class="logo">
+        <h1>Lazy Tools</h1>
+      </div>
+      <nav id="menu">
+        <!-- Categories will be injected here -->
+      </nav>
+      <div class="ad-slot sidebar-ad">
+        <!-- Ad Placeholder -->
+        <p>Ad Space</p>
+      </div>
+    </aside>
+    <main id="main-content" class="glass">
+      <header id="top-bar">
+        <button id="menu-toggle" aria-label="Toggle Menu">☰</button>
+        <div id="search-container">
+          <input type="text" id="tool-search" placeholder="Search tools..." />
+        </div>
+      </header>
+      <div id="tool-container">
+        <div class="welcome-screen">
+          <h2>Select a tool to get started</h2>
+          <div class="quick-links">
+            <!-- Quick links to popular tools -->
+          </div>
+        </div>
+      </div>
+      <div class="ad-slot bottom-ad">
+        <!-- Ad Placeholder -->
+        <p>Ad Space</p>
+      </div>
+    </main>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+
+</html>
