@@ -179,12 +179,12 @@ function handleRouting() {
 }
 
 function updateMetaTags(tool) {
-  document.title = `${tool.title} | Lazy Tools`;
+  document.title = `${tool.title} | Simple Tools`;
   document.querySelector('meta[name="description"]').setAttribute("content", tool.description);
 }
 
 function resetMetaTags() {
-  document.title = 'Lazy Tools - Fast & Free Online Tools';
+  document.title = 'Simple Tools - Fast & Free Online Tools';
   document.querySelector('meta[name="description"]').setAttribute("content", "A collection of fast, lightweight, and free online tools including Age Calculator, Unit Converter, Random Number Generator, and more.");
 }
 
