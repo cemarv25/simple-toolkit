@@ -35,6 +35,27 @@ const tools = [
     title: 'Unit Converter - Length, Weight, Temperature',
     description: 'Convert between different units of measurement like Length, Weight, and Temperature easily.'
   },
+  {
+    id: 'unit-price',
+    name: 'Unit Price Calc',
+    category: 'Money',
+    title: 'Unit Price Calculator - Compare Best Value',
+    description: 'Compare two items to find the best value for money. Calculate unit price savings instantly.'
+  },
+  {
+    id: 'loan-date',
+    name: 'Loan Date Calc',
+    category: 'Money',
+    title: 'Loan Payment Date Calculator - Schedule & Reminders',
+    description: 'Generate a schedule of upcoming loan payment dates and export to your calendar.'
+  },
+  {
+    id: 'shoe-size',
+    name: 'Shoe Size Chart',
+    category: 'Converters',
+    title: 'Shoe Size Converter - US, EU, MX, UK',
+    description: 'Compare and convert shoe sizes between US, EU, MX, and UK standards for Men and Women.'
+  },
 ];
 
 function init() {
@@ -223,6 +244,12 @@ async function loadTool(tool) {
       module = await import('./tools/random-number.js');
     } else if (tool.id === 'unit-converter') {
       module = await import('./tools/unit-converter.js');
+    } else if (tool.id === 'unit-price') {
+      module = await import('./tools/unit-price.js');
+    } else if (tool.id === 'loan-date') {
+      module = await import('./tools/loan-date.js');
+    } else if (tool.id === 'shoe-size') {
+      module = await import('./tools/shoe-size.js');
     } else {
       setTimeout(() => {
         toolContainer.innerHTML = `
