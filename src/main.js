@@ -6,6 +6,8 @@ import '@fontsource/inter/700.css';
 import './styles/variables.css';
 import './styles/global.css';
 
+const BASE_URL = import.meta.env.BASE_URL;
+
 const menuToggle = document.getElementById('menu-toggle');
 const sidebar = document.getElementById('sidebar');
 const toolContainer = document.getElementById('tool-container');
@@ -83,7 +85,7 @@ function renderMenu() {
 
     categoryTools.forEach(tool => {
       const link = document.createElement('a');
-      link.href = `/${tool.id}`;
+      link.href = `${BASE_URL}${tool.id}`;
       link.className = 'menu-item';
       link.textContent = tool.name;
       link.dataset.id = tool.id;
@@ -154,7 +156,20 @@ function updateThemeIcon(theme) {
 }
 
 function handleRouting() {
-  const path = window.location.pathname.slice(1);
+  let path = window.location.pathname;
+
+  // Remove Base URL from path to get the tool ID
+  // BASE_URL is e.g. "/simple-tools/"
+  if (path.startsWith(BASE_URL)) {
+    path = path.slice(BASE_URL.length);
+  } else if (BASE_URL === '/' && path.startsWith('/')) {
+    path = path.slice(1);
+  }
+
+  // Handle trailing slash (e.g. /simple-tools/ -> path is empty)
+  if (path.endsWith('/')) {
+    path = path.slice(0, -1);
+  }
 
   document.querySelectorAll('.menu-item').forEach(item => {
     item.classList.remove('active');
