@@ -6,7 +6,7 @@ import '@fontsource/inter/700.css';
 import './styles/variables.css';
 import './styles/global.css';
 
-const BASE_URL = import.meta.env.BASE_URL;
+const BASE_URL = '/';
 
 const menuToggle = document.getElementById('menu-toggle');
 const sidebar = document.getElementById('sidebar');
@@ -158,11 +158,8 @@ function updateThemeIcon(theme) {
 function handleRouting() {
   let path = window.location.pathname;
 
-  // Remove Base URL from path to get the tool ID
-  // BASE_URL is e.g. "/simple-tools/"
-  if (path.startsWith(BASE_URL)) {
-    path = path.slice(BASE_URL.length);
-  } else if (BASE_URL === '/' && path.startsWith('/')) {
+  // Handle routing for root path
+  if (path.startsWith('/')) {
     path = path.slice(1);
   }
 
@@ -194,12 +191,12 @@ function handleRouting() {
 }
 
 function updateMetaTags(tool) {
-  document.title = `${tool.title} | Simple Tools`;
+  document.title = `${tool.title} | Simple Toolkit`;
   document.querySelector('meta[name="description"]').setAttribute("content", tool.description);
 }
 
 function resetMetaTags() {
-  document.title = 'Simple Tools - Fast & Free Online Tools';
+  document.title = 'Simple Toolkit - Fast & Free Online Tools';
   document.querySelector('meta[name="description"]').setAttribute("content", "A collection of fast, lightweight, and free online tools including Age Calculator, Unit Converter, Random Number Generator, and more.");
 }
 
