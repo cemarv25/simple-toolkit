@@ -33,6 +33,23 @@
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="./vite.svg" />
 
+  <!-- Google Consent Mode v2 - Must load before any Google tags -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+
+    // Set default consent to 'denied' as per GDPR requirements
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied',
+      'wait_for_update': 500
+    });
+
+    gtag('set', 'ads_data_redaction', true);
+  </script>
+
   <!-- Structured Data (JSON-LD) -->
   <script type="application/ld+json">
   {
@@ -67,6 +84,7 @@
   <!-- Stylesheets -->
   <link rel="stylesheet" href="./src/styles/variables.css" />
   <link rel="stylesheet" href="./src/styles/global.css" />
+  <link rel="stylesheet" href="./src/styles/privacy-banner.css" />
 </head>
 
 <body>

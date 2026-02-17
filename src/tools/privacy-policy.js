@@ -1,5 +1,5 @@
 export function render(container) {
-    container.innerHTML = `
+  container.innerHTML = `
     <h2>Privacy Policy</h2>
     <div class="tool-content glass privacy-policy-content">
       <p class="last-updated"><strong>Last Updated:</strong> February 17, 2026</p>
@@ -41,6 +41,15 @@ export function render(container) {
           <li>Serve relevant advertisements</li>
         </ul>
         <p>You can control cookies through your browser settings. However, disabling cookies may affect the functionality of our website.</p>
+      </section>
+
+      <section>
+        <h3>Managing Your Cookie Preferences</h3>
+        <p>You can change your cookie preferences at any time by clicking the button below:</p>
+        <button id="reopen-cookie-banner" class="primary-btn" style="margin: 1rem 0; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; background: linear-gradient(90deg, #ff8a00, #e52e71); color: white; font-weight: 600; cursor: pointer; transition: transform 0.1s;">
+          Manage Cookie Preferences
+        </button>
+        <p>This will reopen the cookie consent banner where you can accept all, reject all, or customize your preferences for different types of cookies.</p>
       </section>
 
       <section>
@@ -145,4 +154,17 @@ export function render(container) {
       }
     </style>
   `;
+
+  const reopenButton = document.getElementById('reopen-cookie-banner');
+  if (reopenButton) {
+    reopenButton.addEventListener('click', async () => {
+      try {
+        const { reopenCookieBanner } = await import('../utils/privacy-banner.js');
+        reopenCookieBanner();
+      } catch (error) {
+        // Privacy banner module blocked by ad blocker
+        alert('Cookie preferences cannot be managed because the privacy banner is blocked by your ad blocker. Please disable your ad blocker for this site to manage cookie preferences.');
+      }
+    });
+  }
 }

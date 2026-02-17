@@ -46,9 +46,27 @@ const footerLinks = [
   },
 ];
 
+async function initPrivacyBanner() {
+  try {
+    const { initGoogleConsentMode, applySavedConsent } = await import('./utils/preferences.js');
+    const { initCookieBanner } = await import('./utils/privacy-banner.js');
+
+    initGoogleConsentMode();
+
+    applySavedConsent();
+
+    initCookieBanner();
+  } catch (error) {
+    // Privacy banner blocked by ad blocker or failed to load
+    console.warn('Privacy banner could not be loaded (likely blocked by ad blocker):', error.message);
+  }
+}
+
 function init() {
   const savedTheme = localStorage.getItem('theme') || 'default';
   document.documentElement.setAttribute('data-theme', savedTheme);
+
+  initPrivacyBanner();
 
   renderMenu();
   injectThemeToggle();
