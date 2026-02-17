@@ -27,4 +27,12 @@
     <lastmod>2026-02-17</lastmod>
     <priority>0.8</priority>
   </url>
+  
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://simple-toolkit.com/privacy-policy</loc>
+    <lastmod>2026-02-17</lastmod>
+    <priority>0.5</priority>
+  </url>
 </urlset>
+

@@ -168,6 +168,31 @@ body {
     margin: var(--spacing-sm);
 }
 
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--glass-border);
+}
+
+.footer-link {
+    display: block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    margin-bottom: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.footer-link:hover,
+.footer-link.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+
 @media (max-width: 768px) {
     #app {
         flex-direction: column;

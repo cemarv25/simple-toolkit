@@ -37,6 +37,15 @@ const tools = [
   },
 ];
 
+const footerLinks = [
+  {
+    id: 'privacy-policy',
+    name: 'Privacy Policy',
+    title: 'Privacy Policy - Simple Toolkit',
+    description: 'Privacy policy for Simple Toolkit, including information about cookies, Google AdSense, and data collection practices.'
+  },
+];
+
 function init() {
   const savedTheme = localStorage.getItem('theme') || 'default';
   document.documentElement.setAttribute('data-theme', savedTheme);
@@ -96,6 +105,22 @@ function renderMenu() {
   }
 
   menuNav.appendChild(fragment);
+
+  // Add footer with legal links
+  const footer = document.createElement('div');
+  footer.className = 'sidebar-footer';
+
+  footerLinks.forEach(page => {
+    const link = document.createElement('a');
+    link.href = `${BASE_URL}${page.id}`;
+    link.className = 'footer-link';
+    link.textContent = page.name;
+    link.dataset.id = page.id;
+    footer.appendChild(link);
+  });
+
+  const sidebar = document.getElementById('sidebar');
+  sidebar.appendChild(footer);
 }
 
 function setupEventListeners() {
@@ -113,7 +138,7 @@ function setupEventListeners() {
   });
 
   document.body.addEventListener('click', (e) => {
-    if (e.target.matches('a.menu-item')) {
+    if (e.target.matches('a.menu-item') || e.target.matches('a.footer-link')) {
       e.preventDefault();
       const href = e.target.getAttribute('href');
 
@@ -168,7 +193,7 @@ function handleRouting() {
     path = path.slice(0, -1);
   }
 
-  document.querySelectorAll('.menu-item').forEach(item => {
+  document.querySelectorAll('.menu-item, .footer-link').forEach(item => {
     item.classList.remove('active');
     if (item.dataset.id === path) {
       item.classList.add('active');
@@ -182,11 +207,16 @@ function handleRouting() {
   }
 
   const tool = tools.find(t => t.id === path);
+  const footerPage = footerLinks.find(p => p.id === path);
+
   if (tool) {
-    loadTool(tool);
+    loadPage(tool);
     updateMetaTags(tool);
+  } else if (footerPage) {
+    loadPage(footerPage);
+    updateMetaTags(footerPage);
   } else {
-    toolContainer.innerHTML = '<h2>Tool not found</h2>';
+    toolContainer.innerHTML = '<h2>Page not found</h2>';
   }
 }
 
@@ -209,21 +239,23 @@ function showWelcomeScreen() {
     `;
 }
 
-async function loadTool(tool) {
+async function loadPage(page) {
   toolContainer.innerHTML = '<h2>Loading...</h2>';
 
   try {
     let module;
-    if (tool.id === 'age-calculator') {
+    if (page.id === 'age-calculator') {
       module = await import('./tools/age-calculator.js');
-    } else if (tool.id === 'random-number') {
+    } else if (page.id === 'random-number') {
       module = await import('./tools/random-number.js');
-    } else if (tool.id === 'unit-converter') {
+    } else if (page.id === 'unit-converter') {
       module = await import('./tools/unit-converter.js');
+    } else if (page.id === 'privacy-policy') {
+      module = await import('./tools/privacy-policy.js');
     } else {
       setTimeout(() => {
         toolContainer.innerHTML = `
-                    <h2>${tool.name}</h2>
+                    <h2>${page.name}</h2>
                     <div class="tool-content glass" style="padding: 20px; margin-top: 20px;">
                         <p>This tool is under construction.</p>
                     </div>
