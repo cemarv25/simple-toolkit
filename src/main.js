@@ -49,16 +49,16 @@ const footerLinks = [
 async function initPrivacyBanner() {
   try {
     const { initGoogleConsentMode, applySavedConsent } = await import('./utils/preferences.js');
-    const { initCookieBanner } = await import('./utils/privacy-banner.js');
 
     initGoogleConsentMode();
 
     applySavedConsent();
 
-    initCookieBanner();
+    // Custom banner is disabled to transition to Google Certified CMP
+    // initCookieBanner();
   } catch (error) {
-    // Privacy banner blocked by ad blocker or failed to load
-    console.warn('Privacy banner could not be loaded (likely blocked by ad blocker):', error.message);
+    // Privacy preferences logic failed to load
+    console.warn('Privacy preferences could not be initialized:', error.message);
   }
 }
 

@@ -157,13 +157,12 @@ export function render(container) {
 
   const reopenButton = document.getElementById('reopen-cookie-banner');
   if (reopenButton) {
-    reopenButton.addEventListener('click', async () => {
-      try {
-        const { reopenCookieBanner } = await import('../utils/privacy-banner.js');
-        reopenCookieBanner();
-      } catch (error) {
-        // Privacy banner module blocked by ad blocker
-        alert('Cookie preferences cannot be managed because the privacy banner is blocked by your ad blocker. Please disable your ad blocker for this site to manage cookie preferences.');
+    reopenButton.addEventListener('click', () => {
+      // Trigger Google's Certified CMP preference center
+      if (window.googlefc && typeof window.googlefc.showRevocationMessage === 'function') {
+        window.googlefc.showRevocationMessage();
+      } else {
+        alert("Cookie preferences are managed by Google. If you don't see a message, please ensure your ad blocker is disabled and refresh the page.");
       }
     });
   }
