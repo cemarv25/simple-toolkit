@@ -46,6 +46,27 @@ const tools: Tool[] = [
     title: 'Unit Converter - Length, Weight, Temperature',
     description: 'Convert between different units of measurement like Length, Weight, and Temperature easily.'
   },
+  {
+    id: 'stopwatch',
+    name: 'Stopwatch',
+    category: 'Date & Time',
+    title: 'Online Stopwatch - Easy to Use with Laps',
+    description: 'Simple and easy to use online stopwatch. Track laps and average times.'
+  },
+  {
+    id: 'qr-code-generator',
+    name: 'QR Code Generator',
+    category: 'Marketing',
+    title: 'QR Code Generator - Create QR Codes for Links & Text',
+    description: 'Create high-quality QR codes instantly for your website, links, or text. Secure and free online QR Code Generator.'
+  },
+  {
+    id: 'option-picker',
+    name: 'Option Picker',
+    category: 'Math',
+    title: 'Option Picker - Weighted Random Picker',
+    description: 'Need help making a decision? Use our Option Picker to pick a random item from a list with custom weights.'
+  },
 ];
 
 const footerLinks: Page[] = [
@@ -290,6 +311,12 @@ async function loadPage(page: Page) {
       module = await import('./tools/random-number');
     } else if (page.id === 'unit-converter') {
       module = await import('./tools/unit-converter');
+    } else if (page.id === 'stopwatch') {
+      module = await import('./tools/stopwatch');
+    } else if (page.id === 'qr-code-generator') {
+      module = await import('./tools/qr-code-generator');
+    } else if (page.id === 'option-picker') {
+      module = await import('./tools/option-picker');
     } else if (page.id === 'privacy-policy') {
       module = await import('./tools/privacy-policy');
     } else {
@@ -310,6 +337,15 @@ async function loadPage(page: Page) {
       wrapper.className = 'fade-in';
       toolContainer.appendChild(wrapper);
       module.render(wrapper);
+
+      // Refresh ads after tool is rendered
+      try {
+        const { initAds, refreshAds } = await import('./utils/ad-manager');
+        initAds();
+        refreshAds();
+      } catch (adError) {
+        console.warn('Ad refresh failed:', adError);
+      }
     }
   } catch (e: unknown) {
     console.error(e);

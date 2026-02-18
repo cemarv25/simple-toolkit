@@ -28,6 +28,27 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- Stopwatch Tool -->
+  <url>
+    <loc>https://simple-toolkit.com/stopwatch</loc>
+    <lastmod>2026-02-18</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- QR Code Generator Tool -->
+  <url>
+    <loc>https://simple-toolkit.com/qr-code-generator</loc>
+    <lastmod>2026-02-18</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Option Picker Tool -->
+  <url>
+    <loc>https://simple-toolkit.com/option-picker</loc>
+    <lastmod>2026-02-18</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
   <!-- Privacy Policy -->
   <url>
     <loc>https://simple-toolkit.com/privacy-policy</loc>
