@@ -37,6 +37,10 @@ export default defineConfig(({ mode }) => {
             minify: 'esbuild',
             cssCodeSplit: true,
             rollupOptions: {
+                input: {
+                    main: path.resolve(__dirname, 'index.html'),
+                    privacy: path.resolve(__dirname, 'src/pages/privacy-policy.html'),
+                },
                 output: {
                     manualChunks: {
                         // manually split vendor chunks if needed

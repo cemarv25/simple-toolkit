@@ -18,7 +18,15 @@ export default {
             return fetch(request);
         }
 
-        // 2. Fetch the requested path from your origin (GitHub Pages)
+        // 2. Handle the Privacy Policy route specially
+        // Map clean URL to the nested file in the build output
+        if (path === '/privacy-policy') {
+            const originUrl = new URL(url);
+            originUrl.pathname = '/src/pages/privacy-policy.html';
+            return fetch(originUrl.toString());
+        }
+
+        // 3. Fetch the requested path from your origin (GitHub Pages)
         // This will try to find the pre-rendered index.html in the directory
         // (e.g. /age-calculator/index.html)
         const response = await fetch(request);
