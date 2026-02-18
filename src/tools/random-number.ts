@@ -1,4 +1,4 @@
-export function render(container) {
+export function render(container: HTMLElement) {
   container.innerHTML = `
     <h2>Random Number Generator</h2>
     <div class="tool-content glass">
@@ -93,12 +93,20 @@ export function render(container) {
     </style>
   `;
 
-  document.getElementById('generate-btn').addEventListener('click', generateNumber);
+  const generateBtn = document.getElementById('generate-btn');
+  if (generateBtn) {
+    generateBtn.addEventListener('click', generateNumber);
+  }
 }
 
 function generateNumber() {
-  const min = parseInt(document.getElementById('min-num').value);
-  const max = parseInt(document.getElementById('max-num').value);
+  const minInput = document.getElementById('min-num') as HTMLInputElement;
+  const maxInput = document.getElementById('max-num') as HTMLInputElement;
+
+  if (!minInput || !maxInput) return;
+
+  const min = parseInt(minInput.value);
+  const max = parseInt(maxInput.value);
 
   if (isNaN(min) || isNaN(max)) return;
 
@@ -112,12 +120,14 @@ function generateNumber() {
   const resultBox = document.getElementById('rng-result');
   const valueSpan = document.getElementById('random-value');
 
-  resultBox.classList.remove('hidden');
+  if (resultBox) resultBox.classList.remove('hidden');
 
-  valueSpan.classList.remove('animate');
-  void valueSpan.offsetWidth; // trigger reflow
-  valueSpan.textContent = random;
-  valueSpan.style.animation = 'none';
-  valueSpan.offsetHeight; /* trigger reflow */
-  valueSpan.style.animation = 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+  if (valueSpan) {
+    valueSpan.classList.remove('animate');
+    void valueSpan.offsetWidth; // trigger reflow
+    valueSpan.textContent = random.toString();
+    valueSpan.style.animation = 'none';
+    valueSpan.offsetHeight; /* trigger reflow */
+    valueSpan.style.animation = 'popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+  }
 }

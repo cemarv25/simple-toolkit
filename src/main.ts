@@ -8,12 +8,23 @@ import './styles/global.css';
 
 const BASE_URL = '/';
 
-const menuToggle = document.getElementById('menu-toggle');
-const sidebar = document.getElementById('sidebar');
-const toolContainer = document.getElementById('tool-container');
-const menuNav = document.getElementById('menu');
+type Page = {
+  id: string;
+  name: string;
+  title: string;
+  description: string;
+};
 
-const tools = [
+type Tool = Page & {
+  category: string;
+};
+
+const menuToggle = document.getElementById('menu-toggle') as HTMLButtonElement;
+const sidebar = document.getElementById('sidebar') as HTMLElement;
+const toolContainer = document.getElementById('tool-container') as HTMLElement;
+const menuNav = document.getElementById('menu') as HTMLElement;
+
+const tools: Tool[] = [
   {
     id: 'age-calculator',
     name: 'Age Calculator',
@@ -37,7 +48,7 @@ const tools = [
   },
 ];
 
-const footerLinks = [
+const footerLinks: Page[] = [
   {
     id: 'privacy-policy',
     name: 'Privacy Policy',
@@ -48,7 +59,7 @@ const footerLinks = [
 
 async function initPrivacyBanner() {
   try {
-    const { initGoogleConsentMode, applySavedConsent } = await import('./utils/preferences.js');
+    const { initGoogleConsentMode, applySavedConsent } = await import('./utils/preferences');
 
     initGoogleConsentMode();
 
@@ -56,9 +67,10 @@ async function initPrivacyBanner() {
 
     // Custom banner is disabled to transition to Google Certified CMP
     // initCookieBanner();
-  } catch (error) {
+  } catch (error: unknown) {
     // Privacy preferences logic failed to load
-    console.warn('Privacy preferences could not be initialized:', error.message);
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn('Privacy preferences could not be initialized:', message);
   }
 }
 
@@ -91,7 +103,7 @@ function injectThemeToggle() {
 }
 
 function renderMenu() {
-  const categories = {};
+  const categories: Record<string, Tool[]> = {};
 
   tools.forEach(tool => {
     if (!categories[tool.category]) {
@@ -138,7 +150,7 @@ function renderMenu() {
   });
 
   const sidebar = document.getElementById('sidebar');
-  sidebar.appendChild(footer);
+  if (sidebar) sidebar.appendChild(footer);
 }
 
 function setupEventListeners() {
@@ -148,7 +160,7 @@ function setupEventListeners() {
   });
 
   document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+    if (window.innerWidth <= 768 && sidebar.classList.contains('open') && e.target instanceof Node) {
       if (!sidebar.contains(e.target) && e.target !== menuToggle) {
         sidebar.classList.remove('open');
       }
@@ -156,9 +168,12 @@ function setupEventListeners() {
   });
 
   document.body.addEventListener('click', (e) => {
-    if (e.target.matches('a.menu-item') || e.target.matches('a.footer-link')) {
+    const target = e.target;
+    if (target instanceof HTMLElement && (target.matches('a.menu-item') || target.matches('a.footer-link'))) {
       e.preventDefault();
-      const href = e.target.getAttribute('href');
+      const href = target.getAttribute('href');
+
+      if (!href) return;
 
       // Fix: Prevent re-rendering current page
       if (window.location.pathname === href) {
@@ -191,7 +206,7 @@ function setupEventListeners() {
   window.addEventListener('popstate', handleRouting);
 }
 
-function updateThemeIcon(theme) {
+function updateThemeIcon(theme: string) {
   const themeToggle = document.getElementById('theme-toggle');
   if (themeToggle) {
     themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
@@ -212,9 +227,10 @@ function handleRouting() {
   }
 
   document.querySelectorAll('.menu-item, .footer-link').forEach(item => {
-    item.classList.remove('active');
-    if (item.dataset.id === path) {
-      item.classList.add('active');
+    const htmlItem = item as HTMLElement;
+    htmlItem.classList.remove('active');
+    if (htmlItem.dataset.id === path) {
+      htmlItem.classList.add('active');
     }
   });
 
@@ -238,14 +254,16 @@ function handleRouting() {
   }
 }
 
-function updateMetaTags(tool) {
+function updateMetaTags(tool: Page) {
   document.title = `${tool.title} | Simple Toolkit`;
-  document.querySelector('meta[name="description"]').setAttribute("content", tool.description);
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute("content", tool.description);
 }
 
 function resetMetaTags() {
   document.title = 'Simple Toolkit - Fast & Free Online Tools';
-  document.querySelector('meta[name="description"]').setAttribute("content", "A collection of fast, lightweight, and free online tools including Age Calculator, Unit Converter, Random Number Generator, and more.");
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute("content", "A collection of fast, lightweight, and free online tools including Age Calculator, Unit Converter, Random Number Generator, and more.");
 }
 
 function showWelcomeScreen() {
@@ -257,19 +275,23 @@ function showWelcomeScreen() {
     `;
 }
 
-async function loadPage(page) {
+type ToolModule = {
+  render: (container: HTMLElement) => void;
+};
+
+async function loadPage(page: Page) {
   toolContainer.innerHTML = '<h2>Loading...</h2>';
 
   try {
-    let module;
+    let module: ToolModule | undefined;
     if (page.id === 'age-calculator') {
-      module = await import('./tools/age-calculator.js');
+      module = await import('./tools/age-calculator');
     } else if (page.id === 'random-number') {
-      module = await import('./tools/random-number.js');
+      module = await import('./tools/random-number');
     } else if (page.id === 'unit-converter') {
-      module = await import('./tools/unit-converter.js');
+      module = await import('./tools/unit-converter');
     } else if (page.id === 'privacy-policy') {
-      module = await import('./tools/privacy-policy.js');
+      module = await import('./tools/privacy-policy');
     } else {
       setTimeout(() => {
         toolContainer.innerHTML = `
@@ -289,9 +311,10 @@ async function loadPage(page) {
       toolContainer.appendChild(wrapper);
       module.render(wrapper);
     }
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(e);
-    toolContainer.innerHTML = `<p>Error loading tool: ${e.message}</p>`;
+    const message = e instanceof Error ? e.message : String(e);
+    toolContainer.innerHTML = `<p>Error loading tool: ${message}</p>`;
   }
 }
 

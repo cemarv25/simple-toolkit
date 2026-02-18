@@ -1,17 +1,29 @@
 // Ad Manager for Google AdSense
 // Handles ad loading, refreshing, and consent integration
+import { ADSENSE_CONFIG } from '../config/adsense-config';
+import { getSavedConsent } from './preferences';
 
-import { ADSENSE_CONFIG } from '../config/adsense-config.js';
-import { getSavedConsent } from './preferences.js';
+type AdSenseUnit = Record<string, unknown>;
+
+type GoogleFC = {
+    showRevocationMessage: () => void;
+};
+
+declare global {
+    interface Window {
+        adsbygoogle: AdSenseUnit[] & { loaded?: boolean };
+        googlefc?: GoogleFC;
+    }
+}
 
 let adsInitialized = false;
-let adElements = [];
+let adElements: NodeListOf<HTMLElement> | undefined;
 
 function hasMarketingConsent() {
     try {
         const consent = getSavedConsent();
         return consent && consent.preferences && consent.preferences.marketing === true;
-    } catch (error) {
+    } catch (error: unknown) {
         // If preferences module is blocked, assume no consent
         return false;
     }
@@ -42,13 +54,14 @@ export function initAds() {
             if (!element.dataset.adsbygoogleStatus) {
                 (window.adsbygoogle = window.adsbygoogle || []).push({});
             }
-        } catch (error) {
-            console.warn('Error initializing ad:', error);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            console.warn('Error initializing ad:', message);
         }
     });
 
     adsInitialized = true;
-    console.log(`Initialized ${adElements.length} ad units`);
+    console.log(`Initialized ${adElements?.length || 0} ad units`);
 }
 
 export function refreshAds() {
@@ -59,7 +72,7 @@ export function refreshAds() {
         return;
     }
 
-    const currentAdElements = document.querySelectorAll('.adsbygoogle');
+    const currentAdElements = document.querySelectorAll('.adsbygoogle') as NodeListOf<HTMLElement>;
 
     if (currentAdElements.length === 0) return;
 
@@ -68,8 +81,9 @@ export function refreshAds() {
             element.innerHTML = '';
             delete element.dataset.adsbygoogleStatus;
             (window.adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (error) {
-            console.warn('Error refreshing ad:', error);
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : String(error);
+            console.warn('Error refreshing ad:', message);
         }
     });
 
@@ -80,7 +94,7 @@ function showFallbackMessages() {
     const adSlots = document.querySelectorAll('.ad-slot');
 
     adSlots.forEach((slot) => {
-        const adElement = slot.querySelector('.adsbygoogle');
+        const adElement = slot.querySelector('.adsbygoogle') as HTMLElement;
         if (!adElement) return;
 
         let message = '';

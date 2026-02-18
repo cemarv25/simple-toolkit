@@ -1,4 +1,14 @@
-export function render(container) {
+type GoogleFC = {
+  showRevocationMessage: () => void;
+};
+
+declare global {
+  interface Window {
+    googlefc?: GoogleFC;
+  }
+}
+
+export function render(container: HTMLElement) {
   container.innerHTML = `
     <h2>Privacy Policy</h2>
     <div class="tool-content glass privacy-policy-content">

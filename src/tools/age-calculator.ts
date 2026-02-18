@@ -1,5 +1,5 @@
-export function render(container) {
-    container.innerHTML = `
+export function render(container: HTMLElement) {
+  container.innerHTML = `
     <h2>Age Calculator</h2>
     <div class="tool-content glass">
       <div class="input-group">
@@ -90,32 +90,40 @@ export function render(container) {
     </style>
   `;
 
-    document.getElementById('calc-age-btn').addEventListener('click', calculateAge);
+  const calcBtn = document.getElementById('calc-age-btn');
+  if (calcBtn) {
+    calcBtn.addEventListener('click', calculateAge);
+  }
 }
 
 function calculateAge() {
-    const birthdateInput = document.getElementById('birthdate').value;
-    if (!birthdateInput) return;
+  const birthdateInput = (document.getElementById('birthdate') as HTMLInputElement)?.value;
+  if (!birthdateInput) return;
 
-    const birthDate = new Date(birthdateInput);
-    const today = new Date();
+  const birthDate = new Date(birthdateInput);
+  const today = new Date();
 
-    let years = today.getFullYear() - birthDate.getFullYear();
-    let months = today.getMonth() - birthDate.getMonth();
-    let days = today.getDate() - birthDate.getDate();
+  let years = today.getFullYear() - birthDate.getFullYear();
+  let months = today.getMonth() - birthDate.getMonth();
+  let days = today.getDate() - birthDate.getDate();
 
-    if (days < 0) {
-        months--;
-        days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
-    }
+  if (days < 0) {
+    months--;
+    days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+  }
 
-    if (months < 0) {
-        years--;
-        months += 12;
-    }
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
 
-    document.getElementById('age-years').textContent = years;
-    document.getElementById('age-months').textContent = months;
-    document.getElementById('age-days').textContent = days;
-    document.getElementById('age-result').classList.remove('hidden');
+  const yearsEl = document.getElementById('age-years');
+  const monthsEl = document.getElementById('age-months');
+  const daysEl = document.getElementById('age-days');
+  const resultBox = document.getElementById('age-result');
+
+  if (yearsEl) yearsEl.textContent = years.toString();
+  if (monthsEl) monthsEl.textContent = months.toString();
+  if (daysEl) daysEl.textContent = days.toString();
+  if (resultBox) resultBox.classList.remove('hidden');
 }

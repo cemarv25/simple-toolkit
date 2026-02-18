@@ -1,17 +1,40 @@
 // Cookie Consent Management with Google Consent Mode v2
 // Handles user consent preferences and integrates with Google's consent framework
 
+declare global {
+    interface Window {
+        dataLayer: unknown[];
+        gtag: (command: string, ...args: unknown[]) => void;
+    }
+}
+
 const CONSENT_VERSION = '1.0';
 const CONSENT_KEY = 'cookieConsent';
+
+type ConsentPreferences = {
+    necessary: boolean;
+    analytics: boolean;
+    marketing: boolean;
+};
+
+type ConsentData = {
+    timestamp: number;
+    version: string;
+    preferences: ConsentPreferences;
+};
 
 // Initialize Google Consent Mode v2
 export function initGoogleConsentMode() {
     window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    window.gtag = gtag;
+    function gtag(...args: unknown[]) {
+        if (Array.isArray(window.dataLayer)) {
+            window.dataLayer.push(args);
+        }
+    }
+    window.gtag = gtag as (...args: unknown[]) => void;
 
     // Set default consent to 'denied' as per GDPR requirements
-    gtag('consent', 'default', {
+    window.gtag('consent', 'default', {
         'ad_storage': 'denied',
         'ad_user_data': 'denied',
         'ad_personalization': 'denied',
@@ -19,16 +42,16 @@ export function initGoogleConsentMode() {
         'wait_for_update': 500
     });
 
-    gtag('set', 'ads_data_redaction', true);
+    window.gtag('set', 'ads_data_redaction', true);
 }
 
 // Get saved consent preferences from localStorage
-export function getSavedConsent() {
+export function getSavedConsent(): ConsentData | null {
     try {
         const saved = localStorage.getItem(CONSENT_KEY);
         if (!saved) return null;
 
-        const consent = JSON.parse(saved);
+        const consent = JSON.parse(saved) as ConsentData;
 
         // Validate version
         if (consent.version !== CONSENT_VERSION) {
@@ -36,15 +59,16 @@ export function getSavedConsent() {
         }
 
         return consent;
-    } catch (e) {
-        console.error('Error reading consent:', e);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        console.error('Error reading consent:', message);
         return null;
     }
 }
 
 // Save consent preferences to localStorage
-export function saveConsent(preferences) {
-    const consent = {
+export function saveConsent(preferences: Partial<ConsentPreferences>) {
+    const consent: ConsentData = {
         timestamp: Date.now(),
         version: CONSENT_VERSION,
         preferences: {
@@ -58,14 +82,15 @@ export function saveConsent(preferences) {
         localStorage.setItem(CONSENT_KEY, JSON.stringify(consent));
         updateGoogleConsent(consent.preferences);
         return true;
-    } catch (e) {
-        console.error('Error saving consent:', e);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        console.error('Error saving consent:', message);
         return false;
     }
 }
 
 // Update Google Consent Mode based on user preferences
-export function updateGoogleConsent(preferences) {
+export function updateGoogleConsent(preferences: ConsentPreferences) {
     if (typeof window.gtag !== 'function') return;
 
     window.gtag('consent', 'update', {
@@ -93,7 +118,7 @@ export function rejectAll() {
 }
 
 // Save custom preferences
-export function saveCustomPreferences(analytics, marketing) {
+export function saveCustomPreferences(analytics: boolean, marketing: boolean) {
     return saveConsent({
         analytics: analytics,
         marketing: marketing
@@ -120,8 +145,9 @@ export function resetConsent() {
     try {
         localStorage.removeItem(CONSENT_KEY);
         return true;
-    } catch (e) {
-        console.error('Error resetting consent:', e);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        console.error('Error resetting consent:', message);
         return false;
     }
 }
