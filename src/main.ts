@@ -124,6 +124,11 @@ function injectThemeToggle() {
 }
 
 function renderMenu() {
+  // Check if menu is already rendered (e.g. from static HTML)
+  if (menuNav.querySelector('.menu-category')) {
+    return;
+  }
+
   const categories: Record<string, Tool[]> = {};
 
   tools.forEach(tool => {
@@ -157,21 +162,23 @@ function renderMenu() {
 
   menuNav.appendChild(fragment);
 
-  // Add footer with legal links
-  const footer = document.createElement('div');
-  footer.className = 'sidebar-footer';
+  // Add footer with legal links if not present
+  const existingFooter = document.querySelector('.sidebar-footer');
+  if (!existingFooter) {
+    const footer = document.createElement('div');
+    footer.className = 'sidebar-footer';
 
-  footerLinks.forEach(page => {
-    const link = document.createElement('a');
-    link.href = `${BASE_URL}${page.id}`;
-    link.className = 'footer-link';
-    link.textContent = page.name;
-    link.dataset.id = page.id;
-    footer.appendChild(link);
-  });
+    footerLinks.forEach(page => {
+      const link = document.createElement('a');
+      link.href = `${BASE_URL}${page.id}`;
+      link.className = 'footer-link';
+      link.textContent = page.name;
+      link.dataset.id = page.id;
+      footer.appendChild(link);
+    });
 
-  const sidebar = document.getElementById('sidebar');
-  if (sidebar) sidebar.appendChild(footer);
+    if (sidebar) sidebar.appendChild(footer);
+  }
 }
 
 function setupEventListeners() {
@@ -301,6 +308,20 @@ type ToolModule = {
 };
 
 async function loadPage(page: Page) {
+  // Hydration check: if the page is already rendered (e.g. via SSG), don't clear it
+  const existingWrapper = toolContainer.querySelector('.fade-in') as HTMLElement | null;
+  if (existingWrapper && existingWrapper.dataset.pageId === page.id) {
+    // Page is already there, but we might still want to refresh ads or re-bind events
+    try {
+      const { initAds, refreshAds } = await import('./utils/ad-manager');
+      initAds();
+      refreshAds();
+    } catch (adError) {
+      console.warn('Ad refresh failed:', adError);
+    }
+    return;
+  }
+
   toolContainer.innerHTML = '<h2>Loading...</h2>';
 
   try {
@@ -335,6 +356,7 @@ async function loadPage(page: Page) {
       toolContainer.innerHTML = '';
       const wrapper = document.createElement('div');
       wrapper.className = 'fade-in';
+      wrapper.dataset.pageId = page.id; // Mark the wrapper for hydration
       toolContainer.appendChild(wrapper);
       module.render(wrapper);
 
