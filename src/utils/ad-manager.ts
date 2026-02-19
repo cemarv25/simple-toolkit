@@ -1,7 +1,6 @@
 // Ad Manager for Google AdSense
 // Handles ad loading, refreshing, and consent integration
 import { ADSENSE_CONFIG } from '../config/adsense-config';
-import { getSavedConsent } from './preferences';
 
 type AdSenseUnit = Record<string, unknown>;
 
@@ -19,26 +18,15 @@ declare global {
 let adsInitialized = false;
 let adElements: NodeListOf<HTMLElement> | undefined;
 
-function hasMarketingConsent() {
-    try {
-        const consent = getSavedConsent();
-        return consent && consent.preferences && consent.preferences.marketing === true;
-    } catch (error: unknown) {
-        // If preferences module is blocked, assume no consent
-        return false;
-    }
-}
-
 function canShowAds() {
-    return ADSENSE_CONFIG.enabled && hasMarketingConsent();
+    return ADSENSE_CONFIG.enabled;
 }
 
 export function initAds() {
     if (adsInitialized) return;
 
     if (!canShowAds()) {
-        console.log('Ads disabled:', !ADSENSE_CONFIG.enabled ? 'Not configured' : 'No marketing consent');
-        showFallbackMessages();
+        console.log('Ads disabled in adsense-config');
         return;
     }
 
@@ -61,16 +49,13 @@ export function initAds() {
     });
 
     adsInitialized = true;
-    console.log(`Initialized ${adElements?.length || 0} ad units`);
+    console.log(`Initialized ${adElements?.length || 0} ad units. Google CMP will handle consent.`);
 }
 
 export function refreshAds() {
     if (!ADSENSE_CONFIG.refreshOnNavigation) return;
 
-    if (!canShowAds()) {
-        showFallbackMessages();
-        return;
-    }
+    if (!canShowAds()) return;
 
     const currentAdElements = document.querySelectorAll('.adsbygoogle') as NodeListOf<HTMLElement>;
 
@@ -88,31 +73,6 @@ export function refreshAds() {
     });
 
     console.log(`Refreshed ${currentAdElements.length} ad units`);
-}
-
-function showFallbackMessages() {
-    const adSlots = document.querySelectorAll('.ad-slot');
-
-    adSlots.forEach((slot) => {
-        const adElement = slot.querySelector('.adsbygoogle') as HTMLElement;
-        if (!adElement) return;
-
-        let message = '';
-
-        if (!ADSENSE_CONFIG.enabled) {
-            message = ADSENSE_CONFIG.fallbackMessages.disabled;
-        } else if (!hasMarketingConsent()) {
-            message = ADSENSE_CONFIG.fallbackMessages.noConsent;
-        }
-
-        if (message && !slot.querySelector('.ad-fallback')) {
-            const fallback = document.createElement('p');
-            fallback.className = 'ad-fallback';
-            fallback.textContent = message;
-            fallback.style.cssText = 'color: var(--text-secondary); font-size: 0.8rem; text-align: center; padding: 1rem;';
-            slot.appendChild(fallback);
-        }
-    });
 }
 
 export function isAdBlockerActive() {

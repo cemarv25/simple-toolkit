@@ -8,11 +8,6 @@ export type AdSenseConfig = {
     };
     enabled: boolean;
     refreshOnNavigation: boolean;
-    fallbackMessages: {
-        adBlocker: string;
-        noConsent: string;
-        disabled: string;
-    };
 };
 
 export const ADSENSE_CONFIG: AdSenseConfig = {
@@ -22,10 +17,5 @@ export const ADSENSE_CONFIG: AdSenseConfig = {
         bottom: '9290445192'
     },
     enabled: true,
-    refreshOnNavigation: true,
-    fallbackMessages: {
-        adBlocker: 'Ad blocked',
-        noConsent: 'Ads disabled (no consent)',
-        disabled: 'Ads not configured'
-    }
+    refreshOnNavigation: true
 };

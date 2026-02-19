@@ -6,77 +6,12 @@ import '@fontsource/inter/700.css';
 import './styles/variables.css';
 import './styles/global.css';
 
-const BASE_URL = '/';
-
-type Page = {
-  id: string;
-  name: string;
-  title: string;
-  description: string;
-};
-
-type Tool = Page & {
-  category: string;
-};
+import { BASE_URL, type Page, type Tool, tools, footerLinks } from './config/pages-config';
 
 const menuToggle = document.getElementById('menu-toggle') as HTMLButtonElement;
 const sidebar = document.getElementById('sidebar') as HTMLElement;
 const toolContainer = document.getElementById('tool-container') as HTMLElement;
 const menuNav = document.getElementById('menu') as HTMLElement;
-
-const tools: Tool[] = [
-  {
-    id: 'age-calculator',
-    name: 'Age Calculator',
-    category: 'Date & Time',
-    title: 'Age Calculator - Exact Age in Years, Months, Days',
-    description: 'Calculate your exact age in years, months, and days with this free and fast online Age Calculator.'
-  },
-  {
-    id: 'random-number',
-    name: 'Random Number',
-    category: 'Math',
-    title: 'Random Number Generator - Min/Max Range',
-    description: 'Generate random numbers within a specific range instantly. Free online Random Number Generator.'
-  },
-  {
-    id: 'unit-converter',
-    name: 'Unit Converter',
-    category: 'Converters',
-    title: 'Unit Converter - Length, Weight, Temperature',
-    description: 'Convert between different units of measurement like Length, Weight, and Temperature easily.'
-  },
-  {
-    id: 'stopwatch',
-    name: 'Stopwatch',
-    category: 'Date & Time',
-    title: 'Online Stopwatch - Easy to Use with Laps',
-    description: 'Simple and easy to use online stopwatch. Track laps and average times.'
-  },
-  {
-    id: 'qr-code-generator',
-    name: 'QR Code Generator',
-    category: 'Marketing',
-    title: 'QR Code Generator - Create QR Codes for Links & Text',
-    description: 'Create high-quality QR codes instantly for your website, links, or text. Secure and free online QR Code Generator.'
-  },
-  {
-    id: 'option-picker',
-    name: 'Option Picker',
-    category: 'Math',
-    title: 'Option Picker - Weighted Random Picker',
-    description: 'Need help making a decision? Use our Option Picker to pick a random item from a list with custom weights.'
-  },
-];
-
-const footerLinks: Page[] = [
-  {
-    id: 'privacy-policy',
-    name: 'Privacy Policy',
-    title: 'Privacy Policy - Simple Toolkit',
-    description: 'Privacy policy for Simple Toolkit, including information about cookies, Google AdSense, and data collection practices.'
-  },
-];
 
 async function initPrivacyBanner() {
   try {
@@ -116,7 +51,6 @@ function injectThemeToggle() {
     toggleBtn.className = 'icon-btn';
     toggleBtn.ariaLabel = 'Toggle Dark Mode';
     toggleBtn.textContent = '🌙';
-    toggleBtn.style.marginLeft = 'auto';
     toggleBtn.style.marginRight = '10px';
 
     topBar.appendChild(toggleBtn);
@@ -219,6 +153,14 @@ function setupEventListeners() {
       }
     }
   });
+
+  const topFeedbackBtn = document.getElementById('top-feedback-btn');
+  if (topFeedbackBtn) {
+    topFeedbackBtn.addEventListener('click', () => {
+      history.pushState(null, '', `${BASE_URL}feedback`);
+      handleRouting();
+    });
+  }
 
   const themeToggle = document.getElementById('theme-toggle');
   if (themeToggle) {
@@ -340,6 +282,10 @@ async function loadPage(page: Page) {
       module = await import('./tools/option-picker');
     } else if (page.id === 'privacy-policy') {
       module = await import('./tools/privacy-policy');
+    } else if (page.id === 'about') {
+      module = await import('./tools/about');
+    } else if (page.id === 'feedback') {
+      module = await import('./tools/feedback');
     } else {
       setTimeout(() => {
         toolContainer.innerHTML = `
@@ -359,6 +305,14 @@ async function loadPage(page: Page) {
       wrapper.dataset.pageId = page.id; // Mark the wrapper for hydration
       toolContainer.appendChild(wrapper);
       module.render(wrapper);
+
+      // Store current tool ID for feedback pre-selection
+      const isTool = tools.some(t => t.id === page.id);
+      if (isTool) {
+        (window as any).prevToolId = page.id;
+      } else if (page.id !== 'feedback') {
+        (window as any).prevToolId = undefined;
+      }
 
       // Refresh ads after tool is rendered
       try {
