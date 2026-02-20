@@ -138,6 +138,13 @@ body {
     background: rgba(255, 255, 255, 0.1);
 }
 
+input::placeholder,
+select::placeholder,
+textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 1;
+}
+
 #tool-search::placeholder {
     color: var(--text-secondary);
 }
