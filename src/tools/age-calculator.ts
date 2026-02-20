@@ -219,15 +219,12 @@ export function render(container: HTMLElement) {
       if (labelDay) labelDay.textContent = 'Birth Day (Optional)';
       if (calcBtn) calcBtn.textContent = 'Calculate Birth Date';
     }
-    // Clear results and inputs when switching
     const resContainer = document.getElementById('result-container');
     if (resContainer) resContainer.classList.add('hidden');
 
-    // Reset output text to avoid "ghost" results
     const resText = document.getElementById('birthdate-result-text');
     if (resText) resText.textContent = '';
 
-    // Clear numeric results
     ['res-years', 'res-months', 'res-days'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.textContent = '0';
@@ -277,8 +274,6 @@ function calculateAge(yIn: HTMLInputElement, mIn: HTMLSelectElement, dIn: HTMLIn
   if (mVal === '') {
     // Only Year provided
     let age = today.getFullYear() - year;
-    // Check if birthday passed this year (assume Jan 1st if not provided)
-    // Actually, if they only know the year, we usually just give the difference.
     if (yearsEl) yearsEl.textContent = age.toString();
     yItem?.classList.remove('hidden');
     mItem?.classList.add('hidden');
