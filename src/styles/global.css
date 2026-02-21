@@ -34,6 +34,12 @@ body {
     transition: transform 0.3s ease;
 }
 
+.logo a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 .logo h1 {
     margin: 0 0 var(--spacing-lg) 0;
     font-size: var(--font-size-xl);
@@ -285,4 +291,70 @@ textarea::placeholder {
 
 #top-feedback-btn {
     margin-left: auto;
+}
+
+.welcome-screen {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.welcome-screen h2 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.welcome-screen>p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-md);
+}
+
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-lg);
+}
+
+.tool-card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    color: var(--text-primary);
+    text-align: left;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.tool-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.tool-card h3 {
+    margin: 0 0 var(--spacing-xs) 0;
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+}
+
+.tool-card p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    line-height: 1.5;
+    flex-grow: 1;
+}
+
+.tool-card-category {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent-color);
+    margin-bottom: var(--spacing-xs);
+    font-weight: 700;
 }

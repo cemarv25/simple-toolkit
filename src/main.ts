@@ -131,9 +131,10 @@ function setupEventListeners() {
 
   document.body.addEventListener('click', (e) => {
     const target = e.target;
-    if (target instanceof HTMLElement && (target.matches('a.menu-item') || target.matches('a.footer-link'))) {
+    if (target instanceof HTMLElement && (target.matches('a.menu-item') || target.matches('a.footer-link') || target.closest('#logo-link'))) {
       e.preventDefault();
-      const href = target.getAttribute('href');
+      const link = target.closest('a');
+      const href = link ? link.getAttribute('href') : null;
 
       if (!href) return;
 
@@ -237,13 +238,36 @@ function resetMetaTags() {
 }
 
 function showWelcomeScreen() {
+  const toolsHtml = tools.map(tool => `
+    <a href="${BASE_URL}${tool.id}" class="tool-card glass animate-card" data-id="${tool.id}">
+      <span class="tool-card-category">${tool.category}</span>
+      <h3>${tool.name}</h3>
+      <p>${tool.description}</p>
+    </a>
+  `).join('');
+
   toolContainer.innerHTML = `
-        <div class="welcome-screen">
-            <h2>Select a tool to get started</h2>
-            <p>Choose a category from the sidebar.</p>
+        <div class="welcome-screen fade-in">
+            <h2>Fast & Free Online Tools</h2>
+            <p>Simple tools for everyday tasks. No sign-ups, no tracking, just utility.</p>
+            <section class="tools-grid" aria-label="Available Tools">
+                ${toolsHtml}
+            </section>
         </div>
     `;
+
+  toolContainer.querySelectorAll('.tool-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = (card as HTMLAnchorElement).getAttribute('href');
+      if (href) {
+        history.pushState(null, '', href);
+        handleRouting();
+      }
+    });
+  });
 }
+
 
 type ToolModule = {
   render: (container: HTMLElement) => void;
