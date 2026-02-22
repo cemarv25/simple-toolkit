@@ -310,6 +310,10 @@ async function loadPage(page: Page) {
       module = await import('./tools/about');
     } else if (page.id === 'feedback') {
       module = await import('./tools/feedback');
+    } else if (page.id === 'watch-time-calculator') {
+      module = await import('./tools/watch-time-calculator');
+    } else if (page.id === 'will-it-fit') {
+      module = await import('./tools/will-it-fit');
     } else {
       setTimeout(() => {
         toolContainer.innerHTML = `

@@ -54,6 +54,20 @@ export const tools: Tool[] = [
         title: 'Option Picker - Weighted Random Picker',
         description: 'Need help making a decision? Use our Option Picker to pick a random item from a list with custom weights.'
     },
+    {
+        id: 'watch-time-calculator',
+        name: 'Watch Time',
+        category: 'Entertainment',
+        title: 'Watch Time Calculator - TV Shows & Movies',
+        description: 'Calculate the total time needed to watch your favorite TV shows, anime, or movie collections.'
+    },
+    {
+        id: 'will-it-fit',
+        name: 'Will it Fit?',
+        category: 'Home & Living',
+        title: 'Will it Fit? - 3D Room Builder & Furniture Placement',
+        description: 'Visualize if furniture will fit in your room with this interactive 3D tool. Support for custom room shapes and collision detection.'
+    },
 ];
 
 export const footerLinks: Page[] = [
