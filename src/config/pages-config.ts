@@ -1,4 +1,5 @@
 export const BASE_URL = '/';
+export const SITE_URL = 'https://www.simple-toolkit.com';
 
 export type Page = {
     id: string;

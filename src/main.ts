@@ -6,7 +6,7 @@ import '@fontsource/inter/700.css';
 import './styles/variables.css';
 import './styles/global.css';
 
-import { BASE_URL, type Page, type Tool, tools, footerLinks } from './config/pages-config';
+import { BASE_URL, SITE_URL, type Page, type Tool, tools, footerLinks } from './config/pages-config';
 
 const menuToggle = document.getElementById('menu-toggle') as HTMLButtonElement;
 const sidebar = document.getElementById('sidebar') as HTMLElement;
@@ -207,7 +207,7 @@ function handleRouting() {
 
   if (!path) {
     showWelcomeScreen();
-    resetMetaTags();
+    updateMetaTags();
     return;
   }
 
@@ -225,16 +225,56 @@ function handleRouting() {
   }
 }
 
-function updateMetaTags(tool: Page) {
-  document.title = `${tool.title} | Simple Toolkit`;
+function updateMetaTags(tool?: Page) {
+  const isHome = !tool;
+  const title = isHome ? 'Simple Toolkit - Fast & Free Online Tools' : `${tool.title} | Simple Toolkit`;
+  const description = isHome
+    ? 'A collection of fast, lightweight, and free online tools including Age Calculator, Unit Converter, Random Number Generator, and more.'
+    : tool.description;
+  const absoluteUrl = isHome ? SITE_URL : `${SITE_URL}${BASE_URL}${tool.id}`;
+
+  document.title = title;
+
   const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute("content", tool.description);
+  if (metaDesc) metaDesc.setAttribute("content", description);
+
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonical);
+  }
+  canonical.setAttribute('href', absoluteUrl);
+
+  const props = {
+    'og:title': title,
+    'og:description': description,
+    'og:url': absoluteUrl,
+    'twitter:title': title,
+    'twitter:description': description,
+    'twitter:url': absoluteUrl
+  };
+
+  for (const [prop, value] of Object.entries(props)) {
+    updateMetaProp(prop, value);
+  }
 }
 
-function resetMetaTags() {
-  document.title = 'Simple Toolkit - Fast & Free Online Tools';
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute("content", "A collection of fast, lightweight, and free online tools including Age Calculator, Unit Converter, Random Number Generator, and more.");
+function updateMetaProp(property: string, content: string) {
+  const isTwitter = property.startsWith('twitter:');
+  const selector = isTwitter ? `meta[name="${property}"]` : `meta[property="${property}"]`;
+  let element = document.querySelector(selector);
+
+  if (!element) {
+    element = document.createElement('meta');
+    if (isTwitter) {
+      element.setAttribute('name', property);
+    } else {
+      element.setAttribute('property', property);
+    }
+    document.head.appendChild(element);
+  }
+  element.setAttribute('content', content);
 }
 
 function showWelcomeScreen() {
