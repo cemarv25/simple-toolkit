@@ -49,6 +49,20 @@
     <priority>0.8</priority>
   </url>
   
+  <!-- Watch Time Calculator Tool -->
+  <url>
+    <loc>https://www.simple-toolkit.com/watch-time-calculator</loc>
+    <lastmod>2026-02-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Will it Fit Tool -->
+  <url>
+    <loc>https://www.simple-toolkit.com/will-it-fit</loc>
+    <lastmod>2026-02-24</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
   <!-- Privacy Policy -->
   <url>
     <loc>https://www.simple-toolkit.com/privacy-policy</loc>

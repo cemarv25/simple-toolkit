@@ -23,6 +23,7 @@ export function render(container: HTMLElement) {
                         <input type="text" id="search-input" placeholder="e.g. The Office, Harry Potter..." />
                         <button id="search-btn" class="primary-btn">Search</button>
                     </div>
+                    <p id="movies-coming-soon" class="help-text hidden">Movie search is coming soon.</p>
                 </div>
             </div>
 
@@ -346,7 +347,8 @@ export function render(container: HTMLElement) {
     const modeTv = document.getElementById('mode-tv')!;
     const modeMovies = document.getElementById('mode-movies')!;
     const searchInput = document.getElementById('search-input') as HTMLInputElement;
-    const searchBtn = document.getElementById('search-btn')!;
+    const searchBtn = document.getElementById('search-btn') as HTMLButtonElement;
+    const moviesComingSoon = document.getElementById('movies-coming-soon') as HTMLElement;
     const resultsContainer = document.getElementById('results-container')!;
     const loadingIndicator = document.getElementById('loading-indicator')!;
     const selectionSummary = document.getElementById('selection-summary')!;
@@ -356,19 +358,23 @@ export function render(container: HTMLElement) {
 
     const toggleMode = (mode: 'tv' | 'movie') => {
         currentMode = mode;
-        if (mode === 'tv') {
-            modeTv.classList.add('active');
-            modeMovies.classList.remove('active');
-        } else {
-            modeMovies.classList.add('active');
-            modeTv.classList.remove('active');
-        }
+        const isTv = mode === 'tv';
+        modeTv.classList.toggle('active', isTv);
+        modeMovies.classList.toggle('active', !isTv);
+
+        // TV mode: enable search for TV shows
+        searchInput.disabled = !isTv;
+        searchBtn.disabled = !isTv;
+        moviesComingSoon.classList.toggle('hidden', isTv);
         resultsContainer.innerHTML = '';
         resultsContainer.classList.add('hidden');
     };
 
     modeTv.addEventListener('click', () => toggleMode('tv'));
     modeMovies.addEventListener('click', () => toggleMode('movie'));
+
+    // Initialize correct state for default mode (TV)
+    toggleMode('tv');
 
     const search = async () => {
         const query = searchInput.value.trim();
