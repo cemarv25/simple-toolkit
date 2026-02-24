@@ -3,14 +3,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 type RoomPreset = 'square' | 'rectangle' | 'l-shape';
 
-type RoomDimensions = {
-    width: number;
-    depth: number;
-    height: number;
-    lWidth?: number;
-    lDepth?: number;
-}
-
 type FurnitureObject = {
     id: string;
     mesh: THREE.Mesh;

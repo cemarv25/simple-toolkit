@@ -44,8 +44,8 @@ export const tools: Tool[] = [
         id: 'qr-code-generator',
         name: 'QR Code Generator',
         category: 'Marketing',
-        title: 'QR Code Generator - Create QR Codes for Links & Text',
-        description: 'Create high-quality QR codes instantly for your website, links, or text. Secure and free online QR Code Generator.'
+        title: 'QR Code Generator - Link to QR Code & URL Generator',
+        description: 'Create unlimited high-quality QR codes for links and URLs instantly. Free, fast, and secure online QR Code Generator for your website or text.'
     },
     {
         id: 'option-picker',
