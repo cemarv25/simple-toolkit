@@ -8,39 +8,63 @@ import './styles/global.css';
 
 import { BASE_URL, SITE_URL, type Page, type Tool, tools, footerLinks } from './config/pages-config';
 
-const menuToggle = document.getElementById('menu-toggle') as HTMLButtonElement;
-const sidebar = document.getElementById('sidebar') as HTMLElement;
-const toolContainer = document.getElementById('tool-container') as HTMLElement;
-const menuNav = document.getElementById('menu') as HTMLElement;
+// Global elements
+let menuToggle: HTMLButtonElement;
+let sidebar: HTMLElement;
+let toolContainer: HTMLElement;
+let menuNav: HTMLElement;
 
 async function initPrivacyBanner() {
   try {
     const { initGoogleConsentMode, applySavedConsent } = await import('./utils/preferences');
-
     initGoogleConsentMode();
-
     applySavedConsent();
-
-    // Custom banner is disabled to transition to Google Certified CMP
-    // initCookieBanner();
   } catch (error: unknown) {
-    // Privacy preferences logic failed to load
     const message = error instanceof Error ? error.message : String(error);
     console.warn('Privacy preferences could not be initialized:', message);
   }
 }
 
+const getSafeTheme = () => {
+  try {
+    return localStorage.getItem('theme') || 'default';
+  } catch (e) {
+    return 'default';
+  }
+};
+
 function init() {
-  const savedTheme = localStorage.getItem('theme') || 'default';
-  document.documentElement.setAttribute('data-theme', savedTheme);
+  try {
+    // Initial DOM binding
+    menuToggle = document.getElementById('menu-toggle') as HTMLButtonElement;
+    sidebar = document.getElementById('sidebar') as HTMLElement;
+    toolContainer = document.getElementById('tool-container') as HTMLElement;
+    menuNav = document.getElementById('menu') as HTMLElement;
 
-  initPrivacyBanner();
+    if (!menuToggle || !sidebar || !toolContainer || !menuNav) {
+      console.warn('Required DOM elements not found during init');
+      return;
+    }
 
-  renderMenu();
-  injectThemeToggle();
-  setupEventListeners();
-  updateThemeIcon(savedTheme);
-  handleRouting();
+    const savedTheme = getSafeTheme();
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    initPrivacyBanner();
+
+    renderMenu();
+    injectThemeToggle();
+    setupEventListeners();
+    updateThemeIcon(savedTheme);
+    handleRouting();
+  } catch (err) {
+    console.error('Initialization failed:', err);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
 }
 
 function injectThemeToggle() {
@@ -58,7 +82,6 @@ function injectThemeToggle() {
 }
 
 function renderMenu() {
-  // Check if menu is already rendered (e.g. from static HTML)
   if (menuNav.querySelector('.menu-category')) {
     return;
   }
@@ -96,7 +119,6 @@ function renderMenu() {
 
   menuNav.appendChild(fragment);
 
-  // Add footer with legal links if not present
   const existingFooter = document.querySelector('.sidebar-footer');
   if (!existingFooter) {
     const footer = document.createElement('div');
@@ -116,13 +138,15 @@ function renderMenu() {
 }
 
 function setupEventListeners() {
-  menuToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    sidebar.classList.toggle('open');
-  });
+  if (menuToggle) {
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sidebar.classList.toggle('open');
+    });
+  }
 
   document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768 && sidebar.classList.contains('open') && e.target instanceof Node) {
+    if (sidebar && window.innerWidth <= 768 && sidebar.classList.contains('open') && e.target instanceof Node) {
       if (!sidebar.contains(e.target) && e.target !== menuToggle) {
         sidebar.classList.remove('open');
       }
@@ -138,9 +162,8 @@ function setupEventListeners() {
 
       if (!href) return;
 
-      // Fix: Prevent re-rendering current page
       if (window.location.pathname === href) {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 768 && sidebar) {
           sidebar.classList.remove('open');
         }
         return;
@@ -149,7 +172,7 @@ function setupEventListeners() {
       history.pushState(null, '', href);
       handleRouting();
 
-      if (window.innerWidth <= 768) {
+      if (window.innerWidth <= 768 && sidebar) {
         sidebar.classList.remove('open');
       }
     }
@@ -185,34 +208,33 @@ function updateThemeIcon(theme: string) {
 }
 
 function handleRouting() {
-  let path = window.location.pathname;
-
-  // Handle routing for root path
-  if (path.startsWith('/')) {
-    path = path.slice(1);
-  }
-
-  // Handle trailing slash (e.g. /simple-tools/ -> path is empty)
-  if (path.endsWith('/')) {
-    path = path.slice(0, -1);
-  }
+  const path = window.location.pathname;
+  const normalizedPath = path.endsWith('/') && path !== '/' ? path.slice(0, -1) : path;
 
   document.querySelectorAll('.menu-item, .footer-link').forEach(item => {
     const htmlItem = item as HTMLElement;
+    const itemHref = htmlItem.getAttribute('href');
     htmlItem.classList.remove('active');
-    if (htmlItem.dataset.id === path) {
+    if (itemHref === normalizedPath || itemHref === normalizedPath + '/') {
       htmlItem.classList.add('active');
     }
   });
 
-  if (!path) {
+  if (normalizedPath === BASE_URL || normalizedPath === '') {
     showWelcomeScreen();
     updateMetaTags();
     return;
   }
 
-  const tool = tools.find(t => t.id === path);
-  const footerPage = footerLinks.find(p => p.id === path);
+  const tool = tools.find(t => {
+    const route = `${BASE_URL}${t.id}`.replace(/\/+/g, '/');
+    return normalizedPath === route || normalizedPath === route + '/';
+  });
+
+  const footerPage = footerLinks.find(p => {
+    const route = `${BASE_URL}${p.id}`.replace(/\/+/g, '/');
+    return normalizedPath === route || normalizedPath === route + '/';
+  });
 
   if (tool) {
     loadPage(tool);
@@ -221,8 +243,11 @@ function handleRouting() {
     loadPage(footerPage);
     updateMetaTags(footerPage);
   } else {
-    toolContainer.innerHTML = '<h2>Page not found</h2>';
+    if (toolContainer) toolContainer.innerHTML = '<h2>Page not found</h2>';
+    updateMetaTags();
   }
+
+  document.dispatchEvent(new Event('render-event'));
 }
 
 function updateMetaTags(tool?: Page) {
@@ -231,7 +256,14 @@ function updateMetaTags(tool?: Page) {
   const description = isHome
     ? 'A collection of fast, lightweight, and free online tools including Age Calculator, Unit Converter, Random Number Generator, and more.'
     : tool.description;
-  const absoluteUrl = isHome ? SITE_URL : `${SITE_URL}${BASE_URL}${tool.id}`;
+
+  let absoluteUrl = SITE_URL;
+  if (!isHome) {
+    const cleanBase = BASE_URL.endsWith('/') ? BASE_URL : BASE_URL + '/';
+    absoluteUrl = `${SITE_URL}${cleanBase}${tool.id}`.replace(/([^:]\/)\/+/g, "$1");
+  } else if (!absoluteUrl.endsWith('/')) {
+    absoluteUrl += '/';
+  }
 
   document.title = title;
 
@@ -278,6 +310,7 @@ function updateMetaProp(property: string, content: string) {
 }
 
 function showWelcomeScreen() {
+  if (!toolContainer) return;
   const toolsHtml = tools.map(tool => `
     <a href="${BASE_URL}${tool.id}" class="tool-card glass animate-card" data-id="${tool.id}">
       <span class="tool-card-category">${tool.category}</span>
@@ -308,16 +341,15 @@ function showWelcomeScreen() {
   });
 }
 
-
 type ToolModule = {
   render: (container: HTMLElement) => void;
 };
 
 async function loadPage(page: Page) {
-  // Hydration check: if the page is already rendered (e.g. via SSG), don't clear it
+  if (!toolContainer) return;
+
   const existingWrapper = toolContainer.querySelector('.fade-in') as HTMLElement | null;
   if (existingWrapper && existingWrapper.dataset.pageId === page.id) {
-    // Page is already there, but we might still want to refresh ads or re-bind events
     try {
       const { initAds, refreshAds } = await import('./utils/ad-manager');
       initAds();
@@ -354,27 +386,16 @@ async function loadPage(page: Page) {
       module = await import('./tools/watch-time-calculator/index');
     } else if (page.id === 'will-it-fit') {
       module = await import('./tools/will-it-fit/index');
-    } else {
-      setTimeout(() => {
-        toolContainer.innerHTML = `
-                    <h2>${page.name}</h2>
-                    <div class="tool-content glass" style="padding: 20px; margin-top: 20px;">
-                        <p>This tool is under construction.</p>
-                    </div>
-                `;
-      }, 300);
-      return;
     }
 
     if (module && module.render) {
       toolContainer.innerHTML = '';
       const wrapper = document.createElement('div');
       wrapper.className = 'fade-in';
-      wrapper.dataset.pageId = page.id; // Mark the wrapper for hydration
+      wrapper.dataset.pageId = page.id;
       toolContainer.appendChild(wrapper);
       module.render(wrapper);
 
-      // Store current tool ID for feedback pre-selection
       const isTool = tools.some(t => t.id === page.id);
       if (isTool) {
         (window as any).prevToolId = page.id;
@@ -382,7 +403,6 @@ async function loadPage(page: Page) {
         (window as any).prevToolId = undefined;
       }
 
-      // Refresh ads after tool is rendered
       try {
         const { initAds, refreshAds } = await import('./utils/ad-manager');
         initAds();
@@ -397,5 +417,3 @@ async function loadPage(page: Page) {
     toolContainer.innerHTML = `<p>Error loading tool: ${message}</p>`;
   }
 }
-
-init();

@@ -30,6 +30,37 @@
   <!-- Theme Color -->
   <meta name="theme-color" content="#1a1a2e" />
 
+  <script>
+    // Immediate metadata sync for prerendering
+    (function () {
+      try {
+        const siteUrl = 'https://www.simple-toolkit.com';
+        const path = window.location.pathname;
+        const normalizedPath = path.endsWith('/') && path !== '/' ? path.slice(0, -1) : path;
+        let absoluteUrl = siteUrl + (normalizedPath === '/' ? '' : normalizedPath);
+        if (normalizedPath === '/' || normalizedPath === '') absoluteUrl += '/';
+
+        const update = (sel, attr, val) => {
+          const el = document.querySelector(sel);
+          if (el) el.setAttribute(attr, val);
+        };
+
+        update('link[rel="canonical"]', 'href', absoluteUrl);
+        update('meta[property="og:url"]', 'content', absoluteUrl);
+        update('meta[name="twitter:url"]', 'content', absoluteUrl);
+
+        // Dynamic Title Fallback
+        const toolId = normalizedPath.split('/').filter(Boolean).pop();
+        if (toolId && normalizedPath !== '/') {
+          const titleContent = toolId.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ') + ' | Simple Toolkit';
+          document.title = titleContent;
+          update('meta[property="og:title"]', 'content', titleContent);
+          update('meta[name="twitter:title"]', 'content', titleContent);
+        }
+      } catch (e) { }
+    })();
+  </script>
+
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="./vite.svg" />
 
@@ -164,7 +195,8 @@
                 text.</li>
               <li><a href="/watch-time-calculator"><strong>Watch Time</strong></a> - Calculate total time to watch
                 series or movies.</li>
-              <li><a href="/will-it-fit"><strong>Will it Fit?</strong></a> - Visualize if furniture will fit inside your room in 3D.</li>
+              <li><a href="/will-it-fit"><strong>Will it Fit?</strong></a> - Visualize if furniture will fit inside your
+                room in 3D.</li>
             </ul>
           </div>
         </noscript>

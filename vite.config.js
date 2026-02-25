@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
                 ],
                 rendererConfig: {
                     maxConcurrentRoutes: 1,
-                    renderAfterTime: 1000,
+                    renderAfterDocumentEvent: 'render-event',
                     headless: true,
                     args: ['--no-sandbox', '--disable-setuid-sandbox'],
                 },
