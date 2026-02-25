@@ -1,0 +1,58 @@
+<h2>Age Calculator</h2>
+<div class="tool-content glass">
+    <div class="mode-selector">
+        <button id="mode-forward" class="mode-btn active">Find Age</button>
+        <button id="mode-reverse" class="mode-btn">Find Birth Date</button>
+    </div>
+
+    <div class="input-form">
+        <div class="input-row">
+            <div class="input-group">
+                <label for="input-year" id="label-year">Birth Year</label>
+                <input type="number" id="input-year" placeholder="YYYY" min="1900" max="2100" />
+            </div>
+            <div class="input-group">
+                <label for="input-month" id="label-month">Month (Optional)</label>
+                <select id="input-month">
+                    <option value="">Month</option>
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="input-day" id="label-day">Day (Optional)</label>
+                <input type="number" id="input-day" placeholder="DD" min="1" max="31" />
+            </div>
+        </div>
+        <button id="calc-btn" class="primary-btn">Calculate Age</button>
+    </div>
+
+    <div id="result-container" class="result-box hidden">
+        <div id="result-status"></div>
+        <div id="age-result-details" class="result-grid">
+            <div class="result-item" id="years-item">
+                <span class="number" id="res-years">0</span>
+                <span class="label">Years</span>
+            </div>
+            <div class="result-item" id="months-item">
+                <span class="number" id="res-months">0</span>
+                <span class="label">Months</span>
+            </div>
+            <div class="result-item" id="days-item">
+                <span class="number" id="res-days">0</span>
+                <span class="label">Days</span>
+            </div>
+        </div>
+        <div id="birthdate-result-text" class="result-text hidden"></div>
+    </div>
+</div>

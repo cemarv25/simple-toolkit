@@ -1,0 +1,90 @@
+<div class="qr-tool">
+    <h1>QR Code Generator</h1>
+    <p class="tool-intro">
+        Quickly transform a link to QR code with our free and fast QR code generator.
+        Perfect for sharing websites, social media profiles, URLs or text instantly.
+    </p>
+
+    <div class="tool-content glass">
+        <div class="input-group">
+            <label for="qr-input">Link or Text</label>
+            <textarea id="qr-input" placeholder="Enter URL or text here..." rows="4"></textarea>
+        </div>
+
+        <button id="generate-qr-btn" class="primary-btn">Generate QR Code</button>
+
+        <div id="qr-result" class="result-area hidden">
+            <div class="qr-preview-container">
+                <canvas id="qr-canvas" aria-label="Generated QR Code"></canvas>
+            </div>
+            <div class="download-actions">
+                <button id="download-png" class="secondary-btn">Download PNG</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="tool-info">
+        <h2>How to Use the QR Code URL Generator</h2>
+        <p>1. Enter the URL or link you want to convert into the input box above.</p>
+        <p>2. Click "Generate QR Code" to create your unique link to QR code instantly.</p>
+        <p>3. Download your QR code as a PNG file for use in print or digital media.</p>
+
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-accordion">
+            <details class="faq-item">
+                <summary>What is a QR code generator?</summary>
+                <div class="faq-content">
+                    <p>A QR code generator is a tool that converts some text (links, urls, names, etc.) into a QR code,
+                        allowing users to scan it with their phone camera, copying the text or navigating to the link
+                        instantly.</p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary>Is this QR code generator free?</summary>
+                <div class="faq-content">
+                    <p>Yes, Simple Toolkit's QR code generator is completely free to use for any personal or commercial
+                        links.</p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary>Can I use this for any type of link?</summary>
+                <div class="faq-content">
+                    <p>Absolutely! You can use it to create a QR code for your website, social media, Google Maps
+                        location, or any other valid URL.</p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary>How many QR codes can I generate?</summary>
+                <div class="faq-content">
+                    <p>You can generate as many QR codes as you want, completely free of charge.</p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary>Do I need to create an account to use this tool?</summary>
+                <div class="faq-content">
+                    <p>No, you don't need to create an account to use this tool. It's completely free and open to use
+                        for everyone.</p>
+                </div>
+            </details>
+            <details class="faq-item">
+                <summary>Do you store any data used to generate QR codes?</summary>
+                <div class="faq-content">
+                    <p>No, we don't store any data. All QR codes are generated locally and are not stored on our
+                        servers.</p>
+                </div>
+            </details>
+        </div>
+    </section>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "QR Code Generator - Simple Toolkit",
+  "url": "https://simple-toolkit.com/qr-code-generator",
+  "description": "Free and fast QR code generator for links and URLs. Create high-quality QR codes instantly.",
+  "applicationCategory": "Utility",
+  "operatingSystem": "All"
+}
+</script>

@@ -1,0 +1,23 @@
+<h2>Unit Converter</h2>
+<div class="tool-content glass">
+    <div class="converter-type">
+        <label>Type:</label>
+        <select id="unit-type">
+            <option value="length">Length</option>
+            <option value="weight">Weight</option>
+            <option value="temperature">Temperature</option>
+        </select>
+    </div>
+
+    <div class="conversion-row">
+        <div class="input-group">
+            <input type="number" id="input-value" value="1" />
+            <select id="input-unit"></select>
+        </div>
+        <span class="equals">=</span>
+        <div class="input-group">
+            <input type="number" id="output-value" readonly />
+            <select id="output-unit"></select>
+        </div>
+    </div>
+</div>

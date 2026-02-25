@@ -1,3 +1,6 @@
+import template from './template.html?raw';
+import './style.css';
+
 type SelectedItem = {
     id: string;
     name: string;
@@ -8,341 +11,10 @@ type SelectedItem = {
 };
 
 export function render(container: HTMLElement) {
-    container.innerHTML = `
-    <div class="watch-time-tool">
-        <h2>Watch Time Calculator</h2>
-        <div class="tool-content glass">
-            <div class="mode-selector">
-                <button id="mode-tv" class="mode-btn active">TV Shows</button>
-                <button id="mode-movies" class="mode-btn">Movies</button>
-            </div>
-            <div class="search-section">
-                <div class="input-group">
-                    <label for="search-input">Search for a show or movie</label>
-                    <div class="search-box">
-                        <input type="text" id="search-input" placeholder="e.g. The Office, Harry Potter..." />
-                        <button id="search-btn" class="primary-btn">Search</button>
-                    </div>
-                    <p id="movies-coming-soon" class="help-text hidden">Movie search is coming soon.</p>
-                </div>
-            </div>
-
-            <div id="loading-indicator" class="loading hidden">
-                <div class="spinner"></div>
-                <p>Searching...</p>
-            </div>
-
-            <div id="results-container" class="results-list hidden"></div>
-
-            <div class="data-attribution">
-                <div class="attribution-item">
-                    <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB Logo" />
-                    <p>Movies: This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-                </div>
-                <div class="attribution-item">
-                    <p>Series: Data provided by <a href="https://www.tvmaze.com/" target="_blank">TVmaze</a>. Licensed by <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA</a>.</p>
-                </div>
-            </div>
-
-            <div id="selection-summary" class="summary-box hidden">
-                <div class="summary-content">
-                    <div class="summary-stats">
-                        <div class="stat-item">
-                            <span class="stat-value" id="total-time">0</span>
-                            <span class="stat-label">Total Hours</span>
-                        </div>
-                        <div id="time-formatted" class="time-formatted">0d 0h 0m</div>
-                    </div>
-                    <button id="clear-selection" class="text-link">Clear All</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .watch-time-tool {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .tool-content {
-            padding: 2rem;
-            border-radius: 12px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-        .mode-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 5px;
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-        }
-        .mode-btn {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            cursor: pointer;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .mode-btn.active {
-            background: var(--accent-color);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        .search-box {
-            display: flex;
-            gap: 10px;
-        }
-        .search-box input {
-            flex: 1;
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            outline: none;
-        }
-        .search-box input:focus {
-            border-color: #4facfe;
-            background: rgba(255, 255, 255, 0.15);
-        }
-        .primary-btn {
-            width: auto;
-            padding: 0 30px;
-            border-radius: 8px;
-            border: none;
-            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            height: 46px; /* Match input height */
-        }
-        .primary-btn:active {
-            transform: scale(0.98);
-        }
-        .primary-btn:hover {
-            opacity: 0.9;
-        }
-        .settings-box {
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-        }
-        .help-text {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
-        .help-text a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-        .results-list {
-            margin-top: 2rem;
-            display: grid;
-            gap: 15px;
-        }
-        .result-card {
-            display: flex;
-            gap: 15px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            transition: transform 0.2s;
-        }
-        .result-card:hover {
-            transform: translateY(-2px);
-        }
-        .result-image {
-            width: 80px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .result-info {
-            flex: 1;
-        }
-        .result-info h3 {
-            margin: 0 0 5px 0;
-            font-size: 1.1rem;
-        }
-        .result-meta {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-        }
-        .summary-box {
-            position: sticky;
-            bottom: 20px;
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: rgba(90, 90, 120, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
-            z-index: 5;
-        }
-        .summary-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .summary-stats {
-            display: flex;
-            align-items: baseline;
-            gap: 15px;
-        }
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-        }
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--accent-color);
-        }
-        .stat-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-        }
-        .time-formatted {
-            font-size: 1.2rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-        .text-link {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            text-decoration: underline;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        .loading {
-            text-align: center;
-            padding: 2rem;
-        }
-        .spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--accent-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .error {
-            color: #ff4d4d;
-            padding: 1rem;
-            text-align: center;
-        }
-        .error-box {
-            background: rgba(255, 77, 77, 0.1);
-            border: 1px solid #ff4d4d;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-            color: var(--text-primary);
-        }
-        .empty-state {
-            color: var(--text-secondary);
-            text-align: center;
-            padding: 2rem;
-            font-style: italic;
-        }
-        .data-attribution {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            opacity: 0.6;
-        }
-        .attribution-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .attribution-item img {
-            height: 10px;
-            flex-shrink: 0;
-        }
-        .attribution-item p {
-            font-size: 0.7rem;
-            margin: 0;
-            color: var(--text-secondary);
-            line-height: 1.3;
-        }
-        .attribution-item a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-        .attribution-item a:hover {
-            text-decoration: underline;
-        }
-        @media (max-width: 480px) {
-            .search-box {
-                flex-direction: column;
-            }
-            .primary-btn {
-                width: 100%;
-            }
-            .attribution-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-        }
-        .hidden { display: none !important; }
-        
-        .episode-selection {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .season-row {
-            margin-bottom: 8px;
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-        .checkbox-group input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-    </style>
-    `;
-
     let currentMode: 'tv' | 'movie' = 'tv';
     let selectedItems: SelectedItem[] = [];
+
+    container.innerHTML = template;
 
     const modeTv = document.getElementById('mode-tv')!;
     const modeMovies = document.getElementById('mode-movies')!;
@@ -362,19 +34,12 @@ export function render(container: HTMLElement) {
         modeTv.classList.toggle('active', isTv);
         modeMovies.classList.toggle('active', !isTv);
 
-        // TV mode: enable search for TV shows
         searchInput.disabled = !isTv;
         searchBtn.disabled = !isTv;
         moviesComingSoon.classList.toggle('hidden', isTv);
         resultsContainer.innerHTML = '';
         resultsContainer.classList.add('hidden');
     };
-
-    modeTv.addEventListener('click', () => toggleMode('tv'));
-    modeMovies.addEventListener('click', () => toggleMode('movie'));
-
-    // Initialize correct state for default mode (TV)
-    toggleMode('tv');
 
     const search = async () => {
         const query = searchInput.value.trim();
@@ -445,7 +110,6 @@ export function render(container: HTMLElement) {
             const response = await fetch(`https://api.tvmaze.com/shows/${showId}/episodes`);
             const episodes = await response.json();
 
-            // Group by season
             const seasons: Record<number, any[]> = {};
             episodes.forEach((ep: any) => {
                 if (!seasons[ep.season]) seasons[ep.season] = [];
@@ -524,10 +188,7 @@ export function render(container: HTMLElement) {
             `;
 
             const cb = card.querySelector('.movie-cb') as HTMLInputElement;
-
-            // Need to fetch individual movie details to get the runtime
             fetchMovieDetails(movie.id, card, movie.title, cb);
-
             resultsContainer.appendChild(card);
         });
         resultsContainer.classList.remove('hidden');
@@ -605,4 +266,7 @@ export function render(container: HTMLElement) {
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') search();
     });
+
+    toggleMode('tv');
 }
+

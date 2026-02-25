@@ -1,0 +1,51 @@
+<div class="watch-time-tool">
+    <h2>Watch Time Calculator</h2>
+    <div class="tool-content glass">
+        <div class="mode-selector">
+            <button id="mode-tv" class="mode-btn active">TV Shows</button>
+            <button id="mode-movies" class="mode-btn">Movies</button>
+        </div>
+        <div class="search-section">
+            <div class="input-group">
+                <label for="search-input">Search for a show or movie</label>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="e.g. The Office, Harry Potter..." />
+                    <button id="search-btn" class="primary-btn">Search</button>
+                </div>
+                <p id="movies-coming-soon" class="help-text hidden">Movie search is coming soon.</p>
+            </div>
+        </div>
+
+        <div id="loading-indicator" class="loading hidden">
+            <div class="spinner"></div>
+            <p>Searching...</p>
+        </div>
+
+        <div id="results-container" class="results-list hidden"></div>
+
+        <div class="data-attribution">
+            <div class="attribution-item">
+                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg"
+                    alt="TMDB Logo" />
+                <p>Movies: This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+            </div>
+            <div class="attribution-item">
+                <p>Series: Data provided by <a href="https://www.tvmaze.com/" target="_blank">TVmaze</a>. Licensed by <a
+                        href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA</a>.</p>
+            </div>
+        </div>
+
+        <div id="selection-summary" class="summary-box hidden">
+            <div class="summary-content">
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="total-time">0</span>
+                        <span class="stat-label">Total Hours</span>
+                    </div>
+                    <div id="time-formatted" class="time-formatted">0d 0h 0m</div>
+                </div>
+                <button id="clear-selection" class="text-link">Clear All</button>
+            </div>
+        </div>
+    </div>
+</div>

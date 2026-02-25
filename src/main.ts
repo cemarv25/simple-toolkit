@@ -333,27 +333,27 @@ async function loadPage(page: Page) {
   try {
     let module: ToolModule | undefined;
     if (page.id === 'age-calculator') {
-      module = await import('./tools/age-calculator');
+      module = await import('./tools/age-calculator/index');
     } else if (page.id === 'random-number') {
-      module = await import('./tools/random-number');
+      module = await import('./tools/random-number/index');
     } else if (page.id === 'unit-converter') {
-      module = await import('./tools/unit-converter');
+      module = await import('./tools/unit-converter/index');
     } else if (page.id === 'stopwatch') {
-      module = await import('./tools/stopwatch');
+      module = await import('./tools/stopwatch/index');
     } else if (page.id === 'qr-code-generator') {
-      module = await import('./tools/qr-code-generator');
+      module = await import('./tools/qr-code-generator/index');
     } else if (page.id === 'option-picker') {
-      module = await import('./tools/option-picker');
+      module = await import('./tools/option-picker/index');
     } else if (page.id === 'privacy-policy') {
-      module = await import('./tools/privacy-policy');
+      module = await import('./tools/privacy-policy/index');
     } else if (page.id === 'about') {
-      module = await import('./tools/about');
+      module = await import('./tools/about/index');
     } else if (page.id === 'feedback') {
-      module = await import('./tools/feedback');
+      module = await import('./tools/feedback/index');
     } else if (page.id === 'watch-time-calculator') {
-      module = await import('./tools/watch-time-calculator');
+      module = await import('./tools/watch-time-calculator/index');
     } else if (page.id === 'will-it-fit') {
-      module = await import('./tools/will-it-fit');
+      module = await import('./tools/will-it-fit/index');
     } else {
       setTimeout(() => {
         toolContainer.innerHTML = `

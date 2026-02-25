@@ -1,0 +1,33 @@
+<div class="feedback-page fade-in">
+    <h2>Provide Feedback</h2>
+
+    <div class="tool-content glass">
+        <p class="intro-text">
+            Have a suggestion, found a bug, or just want to say hi? We'd love to hear from you!
+        </p>
+
+        <form id="feedback-form">
+            <div class="input-group">
+                <label for="feedback-tool">What are you giving feedback about?</label>
+                <select id="feedback-tool" required>
+                    <option value="general">General / Other</option>
+                    <option value="suggestion">New Tool Suggestion</option>
+                    <!-- Tool options will be populated here -->
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="feedback-message">Your Message</label>
+                <textarea id="feedback-message" rows="6" placeholder="Tell us what's on your mind..."
+                    required></textarea>
+            </div>
+
+            <button type="submit" id="send-feedback-btn" class="primary-btn">Send Message</button>
+        </form>
+
+        <div id="feedback-success" class="success-message hidden">
+            <p>✨ Thank you for your feedback! We'll look into it soon.</p>
+            <button id="back-home-btn" class="secondary-btn">Back to Tools</button>
+        </div>
+    </div>
+</div>

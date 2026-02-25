@@ -1,0 +1,26 @@
+<div class="stopwatch-tool">
+    <div id="stopwatch-display" class="display-main">00:00.00</div>
+
+    <div id="main-tap-area" class="tap-area glass">
+        <span id="tap-instruction">TAP TO START</span>
+    </div>
+
+    <div class="bottom-controls">
+        <button id="lap-btn" class="secondary-btn" disabled>Lap</button>
+        <button id="reset-btn" class="secondary-btn danger">Reset</button>
+    </div>
+
+    <div class="laps-container glass hidden" id="laps-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-label">Average Lap</span>
+                <span class="stat-value" id="avg-lap">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Total Laps</span>
+                <span class="stat-value" id="total-laps">0</span>
+            </div>
+        </div>
+        <div id="laps-list" class="laps-list"></div>
+    </div>
+</div>

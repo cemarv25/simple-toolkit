@@ -1,0 +1,105 @@
+<div class="will-it-fit-tool">
+    <div class="tool-header">
+        <h2>Will it Fit? - Room Builder</h2>
+        <p>Visualize furniture placement and check for collisions in 3D.</p>
+    </div>
+
+    <div class="tool-layout">
+        <div class="sidebar glass">
+            <div class="control-group">
+                <h3>Room Setup</h3>
+                <label for="room-preset">Preset Shape</label>
+                <select id="room-preset">
+                    <option value="square">Square</option>
+                    <option value="rectangle" selected>Rectangle</option>
+                    <option value="l-shape">L-Shape</option>
+                </select>
+
+                <div id="room-dimensions-controls">
+                    <div class="input-row room-dimensions-row">
+                        <div class="input-item">
+                            <label for="room-width">Width (m)</label>
+                            <input type="number" id="room-width" value="5" step="0.1" min="1">
+                        </div>
+                        <div class="input-item">
+                            <label for="room-depth">Depth (m)</label>
+                            <input type="number" id="room-depth" value="4" step="0.1" min="1">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-item">
+                            <label for="room-height">Height (m)</label>
+                            <input type="number" id="room-height" value="2.5" step="0.1" min="1">
+                        </div>
+                    </div>
+                    <div id="l-shape-extra" class="hidden">
+                        <div class="input-row">
+                            <div class="input-item">
+                                <label for="room-l-width">L-Inner Width</label>
+                                <input type="number" id="room-l-width" value="2" step="0.1" min="0.5">
+                            </div>
+                            <div class="input-item">
+                                <label for="room-l-depth">L-Inner Depth</label>
+                                <input type="number" id="room-l-depth" value="2" step="0.1" min="0.5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="update-room" class="secondary-btn">Update Room</button>
+            </div>
+
+            <div class="control-group">
+                <h3>Add Furniture</h3>
+                <div class="furniture-presets">
+                    <button class="preset-btn" data-type="cube">Cube (1m³)</button>
+                    <button class="preset-btn" data-type="bed">Bed (2x1.6m)</button>
+                    <button class="preset-btn" data-type="desk">Desk (1.4x0.7m)</button>
+                </div>
+                <div class="advanced-add">
+                    <h4>Custom Object</h4>
+                    <div class="input-row">
+                        <div class="input-item">
+                            <label for="f-w">Width (m)</label>
+                            <input type="number" id="f-w" placeholder="Width" step="0.1" min="0.1" value="1">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-item">
+                            <label for="f-d">Depth (m)</label>
+                            <input type="number" id="f-d" placeholder="Depth" step="0.1" min="0.1" value="1">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-item">
+                            <label for="f-h">Height (m)</label>
+                            <input type="number" id="f-h" placeholder="Height" step="0.1" min="0.1" value="0.5">
+                        </div>
+                    </div>
+                    <button id="add-custom" class="primary-btn">Add Custom</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="canvas-container glass" id="three-container">
+            <div class="canvas-overlay">
+                <p>Left Click: Rotate | Right Click: Pan | Scroll: Zoom</p>
+                <p>Click & Drag objects to move them</p>
+            </div>
+            <div id="selected-info" class="selected-info-panel hidden collapsed">
+                <div class="selected-info-header">
+                    <h3>Selected Object</h3>
+                    <button id="selected-info-toggle" class="selected-info-toggle"
+                        aria-label="Toggle selected object details">+</button>
+                </div>
+                <div class="selected-info-body">
+                    <p id="obj-name">Furniture #1</p>
+                    <div class="input-row">
+                        <label for="obj-rotate">Rotation</label>
+                        <input type="range" id="obj-rotate" min="0" max="360" value="0">
+                    </div>
+                    <button id="delete-obj" class="danger-btn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

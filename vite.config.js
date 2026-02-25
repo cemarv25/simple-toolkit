@@ -22,11 +22,15 @@ export default defineConfig(({ mode }) => {
                     '/stopwatch',
                     '/qr-code-generator',
                     '/option-picker',
+                    '/watch-time-calculator',
+                    '/will-it-fit',
+                    '/about',
+                    '/feedback',
                     '/privacy-policy'
                 ],
                 rendererConfig: {
-                    maxConcurrentRoutes: 4,
-                    renderAfterTime: 500,
+                    maxConcurrentRoutes: 1,
+                    renderAfterTime: 1000,
                     headless: true,
                     args: ['--no-sandbox', '--disable-setuid-sandbox'],
                 },
